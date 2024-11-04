@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat en Vivo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        #chat-box {
+            border: 1px solid #ccc;
+            background: white;
+            border-radius: 5px;
+            padding: 10px;
+            height: 300px;
+            width: 100%;
+            max-width: 500px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 150px;
+        }
+        #sendButton {
+            background-color: #28a745;
+        }
+        #setUsernameButton {
+            background-color: #007bff;
+        }
+        #menuButton {
+            background-color: #17a2b8;
+            margin-top: 10px;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+        }
+        p {
+            margin: 0;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat en Vivo</h1>
+    <div id="chat-box"></div>
+    <div id="username-section">
+        <input type="text" id="username" placeholder="Ingresa tu nombre..." />
+        <button id="setUsernameButton" onclick="setUsername()">Guardar Nombre</button>
+    </div>
+    <input type="text" id="message" placeholder="Escribe tu mensaje..." disabled />
+    <button id="sendButton" onclick="sendMessage()" disabled>Enviar</button>
+    
+    <button id="menuButton" onclick="window.location.href='menu.html'">Menú</button>
+
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const usernameInput = document.getElementById('username');
+        const messageInput = document.getElementById('message');
+        const sendButton = document.getElementById('sendButton');
+        const setUsernameButton = document.getElementById('setUsernameButton');
+
+        let username = '';
+
+        function setUsername() {
+            const name = usernameInput.value.trim();
+            if (name) {
+                username = name;
+                usernameInput.value = '';
+                document.getElementById('username-section').style.display = 'none';
+                messageInput.disabled = false;
+                sendButton.disabled = false;
+            }
+        }
+
+        function fetchMessages() {
+            fetch('chat.php')
+                .then(response => response.json())
+                .then(messages => {
+                    chatBox.innerHTML = messages.map(msg => `<p><strong>${msg.user}:</strong> ${msg.message}</p>`).join('');
+                    chatBox.scrollTop = chatBox.scrollHeight; 
+                });
+        }
+
+        function sendMessage() {
+            const message = messageInput.value;
+            if (message && username) {
+                fetch('chat.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user: username, message })
+                })
+                .then(response => response.json())
+                .then(() => {
+                    messageInput.value = '';
+                    fetchMessages();
+                });
+            }
+        }
+
+        setInterval(fetchMessages, 1000);
+    </script>
+</body>
+</html>

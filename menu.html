@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú del Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #marquee-container {
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        marquee {
+            width: 100%;
+            display: block;
+            white-space: nowrap;
+        }
+        input[type="text"], select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 15px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+            width: 100%;
+            max-width: 150px;
+            background-color: #28a745; /* Color del botón */
+        }
+        #colorPicker {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Menú del Chat</h1>
+    
+    <div id="marquee-container">
+        <marquee id="marquee" behavior="scroll" direction="left"></marquee>
+    </div>
+
+    <input type="text" id="marqueeMessage" placeholder="Escribe un mensaje para el marquee..." />
+    <button onclick="sendMarqueeMessage()">Enviar Mensaje</button>
+
+    <h2>Enviar Mensaje Llamativo</h2>
+    <input type="text" id="fancyMessage" placeholder="Escribe tu mensaje llamativo..." />
+    <input type="color" id="colorPicker" value="#ff0000" /> <!-- Selector de color -->
+    
+    <select id="fontSizePicker">
+        <option value="16px">Tamaño: 16px</option>
+        <option value="20px">Tamaño: 20px</option>
+        <option value="24px">Tamaño: 24px</option>
+        <option value="28px">Tamaño: 28px</option>
+    </select>
+
+    <button onclick="sendFancyMessage()">Enviar Mensaje Llamativo</button>
+    <button onclick="clearChat()">Limpiar Chat</button>
+
+    <script>
+        function fetchMarqueeMessage() {
+            fetch('get_marquee.php') // Asegúrate de tener este archivo para obtener el mensaje
+                .then(response => response.json())
+                .then(data => {
+                    const marquee = document.getElementById('marquee');
+                    marquee.textContent = data.message || '';
+                });
+        }
+
+        function sendMarqueeMessage() {
+            const message = document.getElementById('marqueeMessage').value.trim();
+            if (message) {
+                fetch('set_marquee.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                })
+                .then(response => response.json())
+                .then(() => {
+                    document.getElementById('marqueeMessage').value = ''; // Limpiar el input
+                    fetchMarqueeMessage(); // Actualizar el marquee
+                })
+                .catch(error => console.error('Error al enviar el mensaje:', error));
+            }
+        }
+
+        function sendFancyMessage() {
+            const message = document.getElementById('fancyMessage').value.trim();
+            const color = document.getElementById('colorPicker').value;
+            const fontSize = document.getElementById('fontSizePicker').value;
+            if (message) {
+                const styledMessage = `<span style="color: ${color}; font-size: ${fontSize};">${message}</span>`;
+                fetch('chat.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user: 'Anuncio', message: styledMessage })
+                })
+                .then(response => response.json())
+                .then(() => {
+                    document.getElementById('fancyMessage').value = ''; // Limpiar el input
+                })
+                .catch(error => console.error('Error al enviar el mensaje:', error));
+            } else {
+                alert('Por favor, escribe un mensaje.');
+            }
+        }
+
+        function clearChat() {
+            if (confirm('¿Estás seguro de que quieres limpiar el chat?')) {
+                fetch('clear_chat.php', { method: 'POST' }) // Crear este archivo para limpiar el chat
+                    .then(response => response.json())
+                    .then(() => {
+                        alert('Chat limpiado.');
+                    })
+                    .catch(error => console.error('Error al limpiar el chat:', error));
+            }
+        }
+
+        // Llamar a la función para cargar el mensaje del marquee al cargar la página
+        window.onload = fetchMarqueeMessage;
+    </script>
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Secreto</title>
+    <link rel="icon" href="icon.ico" type="image/x-icon">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff; /* Fondo blanco predeterminado */
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: black; /* Texto negro por defecto */
+            transition: background-color 0.3s ease; /* Transición suave para el fondo */
+            position: relative; /* Para permitir la posición absoluta de las luces y nieve */
+            overflow: hidden; /* Para evitar el desbordamiento */
+        }
+        #marquee-container {
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease; /* Transición para el fondo */
+        }
+        marquee {
+            width: 100%;
+            display: block;
+            white-space: nowrap;
+        }
+        #chat-box {
+            border: 1px solid #ccc;
+            background: #f4f4f4; /* Fondo claro para el chat */
+            border-radius: 5px;
+            padding: 10px;
+            height: 400px;
+            width: 100%;
+            max-width: 500px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease; /* Transición para el fondo */
+        }
+        input[type="text"], input[type="file"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s ease, color 0.3s ease; /* Transición para inputs */
+        }
+        #message {
+            width: calc(100% - 130px); /* Espacio para botones */
+            margin-right: 5px; /* Espacio entre input y botones */
+        }
+        #imageUpload {
+            width: 90px; /* Ancho del botón de subir imagen */
+            display: inline; /* Mostrar como inline para mantener el diseño */
+        }
+        button {
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease; /* Transición para botones */
+        }
+        #sendButton {
+            background-color: #28a745;
+            padding: 10px 15px;
+        }
+        #setUsernameButton {
+            background-color: #007bff;
+            padding: 10px 15px;
+        }
+        #menuButton {
+            background-color: #17a2b8;
+            margin-top: 10px;
+            position: absolute;
+            right: 60px;
+            top: 20px;
+            width: 20px; /* Ancho del botón */
+            height: 20px; /* Alto del botón */
+            padding: 0; /* Sin padding */
+            font-size: 12px; /* Tamaño de fuente reducido */
+        }
+        #toggleThemeButton {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            width: 40px; /* Ancho del botón */
+            height: 40px; /* Alto del botón */
+            border: none; /* Sin borde */
+            cursor: pointer;
+            border-radius: 50%; /* Hacer el botón circular */
+            transition: background-color 0.3s ease; /* Transición para el botón */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Estilos para el modo claro */
+        body.light-mode {
+            background-color: #ffffff; /* Fondo blanco en modo claro */
+            color: black; /* Texto negro en modo claro */
+        }
+        #marquee-container.light-mode {
+            background: #007bff; /* Fondo azul claro para el marquee en modo claro */
+        }
+        #chat-box.light-mode {
+            background: #f4f4f4; /* Fondo claro para el chat en modo claro */
+            border: 1px solid #ccc; /* Borde gris claro */
+        }
+        input[type="text"].light-mode, input[type="file"].light-mode {
+            background: #fff; /* Fondo blanco para inputs en modo claro */
+            color: black; /* Texto negro en modo claro */
+        }
+        button.light-mode {
+            background-color: #007bff; /* Color de fondo de los botones en modo claro */
+        }
+
+        /* Estilos para el modo oscuro */
+        body.dark-mode {
+            background-color: #000000; /* Fondo negro en modo oscuro */
+            color: white; /* Texto blanco en modo oscuro */
+        }
+        #marquee-container.dark-mode {
+            background: #001f3f; /* Fondo azul marino para el marquee en modo oscuro */
+        }
+        #chat-box.dark-mode {
+            background: #444; /* Fondo oscuro para el chat en modo oscuro */
+            border: 1px solid #ccc; /* Borde gris claro */
+        }
+        input[type="text"].dark-mode, input[type="file"].dark-mode {
+            background: #222; /* Fondo oscuro para inputs en modo oscuro */
+            color: white; /* Texto blanco en modo oscuro */
+        }
+        button.dark-mode {
+            background-color: #007bff; /* Color de fondo de los botones en modo oscuro */
+        }
+
+        /* Estilos para el modo navideño */
+        body.christmas-mode {
+            background-color: #05013a; /* Color de fondo navideño */
+            color: rgb(207, 0, 0); /* Texto rojo en modo navideño */
+        }
+        #marquee-container.christmas-mode {
+            background: #0004ff; /* Fondo marrón para el marquee en modo navideño */
+        }
+        #chat-box.christmas-mode {
+            background: #00421e; /* Fondo claro navideño para el chat */
+            border: 1px solid #ccc; /* Borde gris claro */
+        }
+        input[type="text"].christmas-mode, input[type="file"].christmas-mode {
+            background: #fff; /* Fondo blanco para inputs en modo navideño */
+            color: rgb(0, 255, 76); /* Texto rojo en modo navideño */
+        }
+        button.christmas-mode {
+            background-color: #12ce12; /* Verde navideño para botones */
+        }
+
+        /* Estilos para los copos de nieve y luces */
+        .snowflake {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.3;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+        .light {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: rgb(0, 174, 255);
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 10px rgb(0, 183, 255);
+        }
+        @keyframes fall {
+            0% {
+                top: -10%;
+                transform: translateX(0);
+            }
+            100% {
+                top: 100%;
+                transform: translateX(calc(-50% + 10px * (random() - 0.5))); /* Movimiento horizontal aleatorio */
+            }
+        }
+
+        /* Estilos para el contenedor de entrada */
+        #input-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat Secreto</h1>
+
+    <div id="marquee-container">
+        <marquee id="marquee" behavior="scroll" direction="left"></marquee>
+    </div>
+
+    <div id="chat-box"></div>
+    <div id="username-section">
+        <input type="text" id="username" placeholder="Ingresa tu nombre..." />
+        <button id="setUsernameButton" onclick="setUsername()">Guardar Nombre</button>
+    </div>
+
+    <div id="input-container">
+        <input type="text" id="message" placeholder="Escribe tu mensaje..." />
+        <label for="imageUpload" style="cursor: pointer;">📷</label> <!-- Emoji de cámara -->
+        <input type="file" id="imageUpload" accept="image/*" style="display: none;" />
+        <button id="sendButton" onclick="sendMessage()" disabled>📤</button> <!-- Emoji de enviar -->
+    </div>
+    
+    <button id="menuButton" onclick="requestPassword()">M</button>
+    <button id="toggleThemeButton" onclick="toggleTheme()">🌙</button> <!-- Icono para el botón -->
+    
+    <div class="lights" id="lights-container"></div>
+
+    <script src="requestPassword.js"></script>
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const usernameInput = document.getElementById('username');
+        const messageInput = document.getElementById('message');
+        const sendButton = document.getElementById('sendButton');
+        const setUsernameButton = document.getElementById('setUsernameButton');
+        const imageUpload = document.getElementById('imageUpload');
+        const toggleThemeButton = document.getElementById('toggleThemeButton');
+        const lightsContainer = document.getElementById('lights-container');
+
+        let username = '';
+        let autoScroll = true;
+        let currentMode = 'light'; // Variable para rastrear el modo actual
+
+        // Función para crear copos de nieve
+        function createSnowflakes() {
+            for (let i = 0; i < 100; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.style.left = `${Math.random() * 100}vw`;
+                snowflake.style.animationDuration = `${Math.random() * 3 + 2}s`; // Duración aleatoria
+                document.body.appendChild(snowflake);
+            }
+        }
+
+        // Función para crear luces navideñas
+        function createLights() {
+            for (let i = 0; i < 20; i++) {
+                const light = document.createElement('div');
+                light.classList.add('light');
+                light.style.left = `${Math.random() * 100}vw`;
+                light.style.top = `${Math.random() * 100}vh`;
+                light.style.animationDuration = `${Math.random() * 3 + 2}s`; // Duración aleatoria
+                lightsContainer.appendChild(light);
+            }
+        }
+
+        // Recuperar el nombre de usuario del localStorage al cargar la página
+        window.onload = () => {
+            username = localStorage.getItem('username');
+            if (username) {
+                document.getElementById('username-section').style.display = 'none';
+                messageInput.disabled = false; // Habilitar el input de mensaje
+                imageUpload.disabled = false; // Habilitar el input de imagen
+                sendButton.disabled = false;
+            }
+            fetchMessages();
+            fetchMarqueeMessage();
+            setInterval(fetchMessages, 1000); // Actualiza los mensajes del chat cada segundo
+            setInterval(fetchMarqueeMessage, 5000); // Actualiza el marquee cada 5 segundos
+            requestNotificationPermission(); // Solicitar permiso al cargar la página
+        };
+
+        function setUsername() {
+            const name = usernameInput.value.trim();
+            if (name) {
+                username = name;
+                localStorage.setItem('username', username); // Guardar el nombre en localStorage
+                usernameInput.value = '';
+                document.getElementById('username-section').style.display = 'none';
+                messageInput.disabled = false; // Habilitar el input de mensaje
+                imageUpload.disabled = false; // Habilitar el input de imagen
+                sendButton.disabled = false;
+                messageInput.focus();
+            }
+        }
+
+        function checkInput() {
+            sendButton.disabled = messageInput.value.trim() === '' && !imageUpload.files.length; // Habilitar el botón solo si hay texto o un archivo
+        }
+
+        function fetchMessages() {
+            fetch('chat.php')
+                .then(response => response.json())
+                .then(messages => {
+                    chatBox.innerHTML = ''; // Limpiar el chat antes de añadir nuevos mensajes
+                    messages.forEach(msg => {
+                        const messageElement = document.createElement('div');
+                        messageElement.innerHTML = `<strong>${msg.user}:</strong> ${msg.message}`;
+                        chatBox.appendChild(messageElement);
+                    });
+                    if (autoScroll) {
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    }
+                });
+        }
+
+        function fetchMarqueeMessage() {
+            fetch('get_marquee.php')
+                .then(response => response.json())
+                .then(data => {
+                    const marquee = document.getElementById('marquee');
+                    marquee.textContent = data.message || '';
+                });
+        }
+
+        function sendMessage() {
+            if (!username) {
+                alert('Por favor, ingresa tu nombre antes de enviar un mensaje.');
+                return;
+            }
+
+            const message = messageInput.value.trim();
+            const imageFile = imageUpload.files[0];
+
+            const formData = new FormData();
+            formData.append('user', username);
+            if (message) {
+                formData.append('message', message);
+            }
+            if (imageFile) {
+                formData.append('image', imageFile);
+            }
+
+            fetch('chat.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(() => {
+                messageInput.value = ''; // Resetear el input de mensaje
+                imageUpload.value = ''; // Resetear el input de la imagen
+                checkInput(); // Verificar si hay texto o archivo para habilitar el botón
+                fetchMessages(); // Fetch y mostrar nuevos mensajes
+                fetchMarqueeMessage(); // Actualizar el marquee después de enviar un mensaje
+                showNotification(`Nuevo mensaje de ${username}: ${message}`); // Mostrar notificación
+            })
+            .catch(error => {
+                console.error('Error al enviar el mensaje:', error);
+            });
+        }
+
+        // Manejar el desplazamiento manual
+        chatBox.addEventListener('scroll', () => {
+            const atBottom = chatBox.scrollHeight - chatBox.clientHeight <= chatBox.scrollTop + 1;
+            autoScroll = atBottom;
+        });
+
+        // Verificar los campos de entrada
+        messageInput.addEventListener('input', checkInput);
+        imageUpload.addEventListener('input', checkInput);
+
+        // Función para alternar entre modo claro, oscuro y navideño
+        function toggleTheme() {
+            if (currentMode === 'light') {
+                currentMode = 'dark';
+            } else if (currentMode === 'dark') {
+                currentMode = 'christmas';
+                createSnowflakes(); // Crear copos de nieve
+                createLights(); // Crear luces
+            } else {
+                currentMode = 'light';
+                document.querySelectorAll('.snowflake').forEach(s => s.remove()); // Eliminar copos de nieve
+                document.querySelectorAll('.light').forEach(l => l.remove()); // Eliminar luces
+            }
+
+            document.body.className = `${currentMode}-mode`;
+            const marqueeContainer = document.getElementById('marquee-container');
+            marqueeContainer.className = `${currentMode}-mode`;
+            chatBox.className = `${currentMode}-mode`;
+
+            const inputs = document.querySelectorAll('input[type="text"], input[type="file"]');
+            inputs.forEach(input => input.classList.toggle('light-mode', currentMode === 'light'));
+            inputs.forEach(input => input.classList.toggle('dark-mode', currentMode === 'dark'));
+            inputs.forEach(input => input.classList.toggle('christmas-mode', currentMode === 'christmas'));
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => button.classList.toggle('light-mode', currentMode === 'light'));
+            buttons.forEach(button => button.classList.toggle('dark-mode', currentMode === 'dark'));
+            buttons.forEach(button => button.classList.toggle('christmas-mode', currentMode === 'christmas'));
+
+            // Cambiar el emoji y el color de fondo del botón
+            if (currentMode === 'light') {
+                toggleThemeButton.innerHTML = '☀️'; // Modo claro
+            } else if (currentMode === 'dark') {
+                toggleThemeButton.innerHTML = '🌙'; // Modo oscuro
+            } else {
+                toggleThemeButton.innerHTML = '🎄'; // Modo navideño
+            }
+            toggleThemeButton.style.backgroundColor = currentMode === 'light' ? '#00bfff' : currentMode === 'dark' ? '#001f3f' : '#ff4500'; // Cambia el color de fondo
+            toggleThemeButton.style.color = currentMode === 'light' ? 'black' : 'white'; // Cambia el color del texto
+        }
+
+        // Solicitar permiso para las notificaciones
+        function requestNotificationPermission() {
+            if (Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+
+        // Mostrar notificación
+        function showNotification(message) {
+            if (Notification.permission === 'granted') {
+                new Notification('Nuevo Mensaje', {
+                    body: message,
+                    icon: 'icon.ico' // Aquí puedes poner la ruta de un ícono si lo deseas
+                });
+            }
+        }
+    </script>
+</body>
+</html>
