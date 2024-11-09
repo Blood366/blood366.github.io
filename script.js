@@ -1,6 +1,6 @@
 // Definir los archivos de música
 const musica = [
-    { nombre: "Canción 1", archivo: "ÚLTIMA CENA.mp3" },
+    { nombre: "Canción 1", archivo: "ÚLTIMA%CENA.mp3" },
     { nombre: "Canción 2", archivo: "cancion2.mp3" },
     { nombre: "Canción 3", archivo: "cancion3.mp3" },
     // Agrega más canciones aquí si es necesario
