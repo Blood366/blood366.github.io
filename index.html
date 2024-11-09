@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Página de Música</title>
     <style>
-        /* Estilo básico */
+        /* Estilo básico para la página */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -54,7 +54,7 @@
             text-decoration: underline;
         }
 
-        /* Hacer que el reproductor sea más amigable en móviles */
+        /* Para pantallas pequeñas (móviles) */
         @media (max-width: 768px) {
             .track audio {
                 width: 100%;
@@ -74,9 +74,9 @@
     </div>
 
     <script>
-        // Definir los archivos de música
+        // Definir los archivos de música (sin espacios ni caracteres especiales)
         const musica = [
-            { nombre: "Canción 1", archivo: "ULTIMACENA.mp3" },  // Asegúrate de que el archivo esté en la misma carpeta
+            { nombre: "Canción 1", archivo: "ULTIMA_CENA.mp3" },  // Asegúrate de que el archivo esté en la misma carpeta
             { nombre: "Canción 2", archivo: "cancion2.mp3" },
             { nombre: "Canción 3", archivo: "cancion3.mp3" },
         ];
@@ -84,7 +84,7 @@
         // Obtener el contenedor donde se mostrarán los archivos
         const musicList = document.getElementById('music-list');
 
-        // Función para generar el reproductor de música y el enlace de descarga
+        // Función para crear el reproductor de audio y el enlace de descarga
         function crearCancion(cancion) {
             const divTrack = document.createElement('div');
             divTrack.classList.add('track');
@@ -92,7 +92,7 @@
             // Crear el reproductor de audio
             const audio = document.createElement('audio');
             audio.controls = true;
-            audio.src = cancion.archivo;  // Ruta del archivo en la misma carpeta
+            audio.src = cancion.archivo;  // Ruta del archivo de música
             
             // Crear el enlace para descargar la canción
             const enlaceDescarga = document.createElement('a');
