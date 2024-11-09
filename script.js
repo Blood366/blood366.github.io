@@ -1,12 +1,9 @@
 // Definir los archivos de música
 const musica = [
     { nombre: "Canción 1", archivo: "cancion1.mp3" },
-    { nombre: "Canción 2", archivo: "ÚLTIMA CENA.mp3" },
+    { nombre: "Canción 2", archivo: "cancion2.mp3" },
     { nombre: "Canción 3", archivo: "cancion3.mp3" },
-    { nombre: "Canción 4", archivo: "cancion4.mp3" },
-    { nombre: "Canción 5", archivo: "cancion5.mp3" },
-    { nombre: "Canción 6", archivo: "cancion6.mp3" },
-    // Agrega más canciones aquí
+    // Agrega más canciones aquí si es necesario
 ];
 
 // Obtener el contenedor donde se mostrarán los archivos
@@ -20,11 +17,11 @@ function crearCancion(cancion) {
     // Crear el reproductor de audio
     const audio = document.createElement('audio');
     audio.controls = true;
-    audio.src = `https://raw.githubusercontent.com/tu-usuario/tu-repositorio/main/musica/${cancion.archivo}`;
+    audio.src = cancion.archivo; // Ruta relativa a la misma carpeta del index.html
     
     // Crear el enlace para descargar la canción
     const enlaceDescarga = document.createElement('a');
-    enlaceDescarga.href = `https://raw.githubusercontent.com/tu-usuario/tu-repositorio/main/musica/${cancion.archivo}`;
+    enlaceDescarga.href = cancion.archivo;
     enlaceDescarga.download = cancion.nombre;
     enlaceDescarga.textContent = 'Descargar';
     
