@@ -3,115 +3,561 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Página de Música</title>
+    <title>Music Player</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Estilo básico para la página */
+        /* General Styles */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f3f3f3;
+            background-color: #000000;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            overflow: auto; /* Evitar el desplazamiento cuando se minimiza el reproductor */
         }
-
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
         h1 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #ff0000;
+    text-align: center;
+    animation: colorChange 4s infinite alternate, glowEffect 4s infinite alternate; /* Ambas animaciones */
+}
+
+/* Animación de cambio de color */
+@keyframes colorChange {
+   
+    0% {
+        color: #9e0000;  /* Rojo anaranjado */
+    }
+    100% {
+        color: #000000;  /* Azul */
+    }
+}
+
+/* Animación de brillo (sombra de texto) */
+@keyframes glowEffect {
+    0% {
+        text-shadow: 0 0 20px rgb(184, 0, 0);  /* Brillo suave, sombra roja */
+    }
+    50% {
+        text-shadow: 0 0 20px rgb(158, 0, 0);  /* Brillo más fuerte, sombra roja */
+    }
+    100% {
+        text-shadow: 0 0 20px rgb(138, 0, 0)/* Brillo máximo, sombra roja */
+    }
+}
+
+        .music-container {
+            width: 90%;
+            max-width: 500px;
+            background-color: #1b1b1ba6;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            padding: 20px;
             text-align: center;
-            color: #333;
         }
 
-        .track {
+        /* Search Bar Styles */
+        .search-bar { 
+    width: 80%;
+    padding: 10px;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 2px groove  #ff0000;
+    background-color: #333;
+    color: white;
+    outline: none;
+    animation: colorchange 4s infinite alternate, glowEffect2 1.5s infinite alternate;  /* Añadir la animación de resplandor */
+}
+
+@keyframes colorchange {
+    0% {
+        color: #ffffff;  /* Morado */
+    }
+    50% {
+        color: #ff8383;  /* Rojo anaranjado */
+    }
+    100% {
+        color: #ffffff;  /* Azul */
+    }
+}
+
+@keyframes glowEffect2 {
+    0% {
+        box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);  /* Brillo rojo suave */
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);  /* Brillo más fuerte */
+    }
+    100% {
+        box-shadow: 0 0 30px rgba(255, 0, 0, 1);  /* Brillo máximo */
+    }
+}
+
+        .song-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+
+    
+
+.theme-toggle-btn:hover {
+    background-color: #ffffff;
+}
+
+        .song {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            background-color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+
+        .song-details {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            Color: rgb(255, 255, 255);
+            transition: color 0.3s;
+        }
+        
+        .song:hover {
+            background-color: #9b0000;
+           
+        }
+        .song-details:hover {
+          
+            color : #000000;
+        }
+     
+
+        .song-details img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            margin-right: 15px;
+        }
+
+        .song-details p {
+            margin: 5px 0;
+            font-size: 1.1rem;
+        }
+
+        /* Styles for the superimposed player */
+        .expanded-player {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro */
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: auto;
+            backdrop-filter: blur(10px); /* Difuminar fondo */
+        }
+
+        .player-content {
+            background-color: #222;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .album-cover {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .expanded-player h2, .expanded-player h3 {
+            margin: 10px 0;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .controls button {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            width: 40%;
+        }
+
+        .controls button:hover {
+            background-color: #e60000;
+        }
+
+        .audio-controls {
+            width: 100%;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .audio-controls .progress-container {
+            width: 100%;
+            height: 5px;
+            background-color: #444;
+            border-radius: 5px;
+            margin: 15px 0;
+            cursor: pointer;
+        }
+
+        .audio-controls .progress-bar {
+            width: 0;
+            height: 100%;
+            background-color: #ff0000;
+            border-radius: 5px;
+        }
+
+        .audio-controls .time {
+            font-size: 1rem;
+            color: #aaa;
+        }
+
+        /* Close and Minimize Buttons */
+        .close-btn, .minimize-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #e60000;
+            color: white;
+            border: none;
             padding: 10px;
-            border-radius: 6px;
-            background-color: #f9f9f9;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
-        .track:hover {
-            background-color: #f1f1f1;
+        .close-btn:hover, .minimize-btn:hover {
+            background-color: #ff0000;
         }
 
-        .track audio {
-            width: 80%;
+        .minimize-btn {
+            font-size: 1.2rem;
+            top: 60px; /* Mover el botón de minimizar debajo de la "X" */
         }
 
-        .track a {
-            color: #4CAF50;
-            text-decoration: none;
+        /* Minimizado en la esquina */
+        .minimized-player {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #222;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1100; /* Más alto para que quede encima de otros elementos */
+            animation: rotate 5s linear infinite; /* Giro constante */
         }
 
-        .track a:hover {
-            text-decoration: underline;
+        .minimized-player img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
         }
 
-        /* Para pantallas pequeñas (móviles) */
-        @media (max-width: 768px) {
-            .track audio {
-                width: 100%;
+        /* Animación de giro constante */
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Media Queries for Mobile Devices */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
             }
 
-            .container {
-                margin: 10px;
+            .music-container {
+                width: 90%;
                 padding: 15px;
+            }
+
+            .song-list {
+                gap: 10px;
+            }
+
+            .song {
+                padding: 12px;
+            }
+
+            .song-details p {
+                font-size: 1rem;
+            }
+
+            .controls button {
+                padding: 12px;
+                font-size: 1rem;
+                width: 45%;
+            }
+
+            audio {
+                margin-top: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Blood MP3</h1>
-        <div id="music-list"></div>
+
+    <h1>Blood_Lyrics</h1> 
+
+    
+    <!-- Search Bar -->
+    <input type="text" class="search-bar" id="searchBar" placeholder="Buscar canciones...">
+
+    <div class="music-container">
+        <div class="song-list" id="song-list">
+            <!-- Songs will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Expanded Player (superimposed) -->
+    <div class="expanded-player" id="expanded-player">
+        <div class="player-content">
+            <button class="minimize-btn" id="minimizePlayerBtn">-</button>
+            <button class="close-btn" id="closePlayerBtn">X</button>
+            <img id="albumCover" class="album-cover" src="" alt="Album Cover">
+            <h2 id="songTitle"></h2>
+            <h3 id="songArtist"></h3>
+
+            <!-- Audio controls -->
+            <div class="audio-controls">
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="time" id="time-info">00:00 / 00:00</div>
+            </div>
+
+            <div class="controls">
+                <button id="prevBtn">Prev</button>
+                <button id="playPauseBtn">Play</button>
+                <button id="nextBtn">Next</button>
+                <button id="downloadBtn">Download</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Minimizado Player -->
+    <div class="minimized-player" id="minimizedPlayer" style="display: none;">
+        <img id="minimizedAlbumCover" src="" alt="Minimized Cover">
     </div>
 
     <script>
-        // Definir los archivos de música (sin espacios ni caracteres especiales)
-        const musica = [
-            { nombre: "Canción 1", archivo: "ULTIMACENA.mp3" },  // Asegúrate de que el archivo esté en la misma carpeta
-            { nombre: "Canción 2", archivo: "cancion2.mp3" },
-            { nombre: "Canción 3", archivo: "cancion3.mp3" },
+        const songs = [
+            { title: "Ultima Cena", artist: "Hades66", file: "ULTIMACENA.mp3", cover: "ULTIMACENA.png" },
+            { title: "A Solas Remix", artist: "Lunay", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "Song 3", artist: "Artist 3", file: ".mp3", cover: ".jpg" },
+            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "Song 4", artist: "Artist 4", file: "songs/song4.mp3", cover: "covers/cover4.jpg" }
         ];
-
-        // Obtener el contenedor donde se mostrarán los archivos
-        const musicList = document.getElementById('music-list');
-
-        // Función para crear el reproductor de audio y el enlace de descarga
-        function crearCancion(cancion) {
-            const divTrack = document.createElement('div');
-            divTrack.classList.add('track');
-            
-            // Crear el reproductor de audio
-            const audio = document.createElement('audio');
-            audio.controls = true;
-            audio.src = cancion.archivo;  // Ruta del archivo de música
-            
-            // Crear el enlace para descargar la canción
-            const enlaceDescarga = document.createElement('a');
-            enlaceDescarga.href = cancion.archivo;
-            enlaceDescarga.download = cancion.nombre;
-            enlaceDescarga.textContent = 'Descargar';
-            
-            // Agregar el reproductor y el enlace de descarga
-            divTrack.appendChild(audio);
-            divTrack.appendChild(enlaceDescarga);
-            
-            // Añadir la canción al listado
-            musicList.appendChild(divTrack);
+    
+        let currentSongIndex = 0;
+        let isPlaying = false;
+        const audioPlayer = new Audio(songs[currentSongIndex].file);
+        const progressBar = document.getElementById("progress-bar");
+        const timeInfo = document.getElementById("time-info");
+        const playPauseBtn = document.getElementById("playPauseBtn");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const albumCover = document.getElementById("albumCover");
+        const songTitle = document.getElementById("songTitle");
+        const songArtist = document.getElementById("songArtist");
+        const closePlayerBtn = document.getElementById("closePlayerBtn");
+        const minimizePlayerBtn = document.getElementById("minimizePlayerBtn");
+        const expandedPlayer = document.getElementById("expanded-player");
+        const minimizedPlayer = document.getElementById("minimizedPlayer");
+        const minimizedAlbumCover = document.getElementById("minimizedAlbumCover");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const searchBar = document.getElementById("searchBar");
+        const songList = document.getElementById("song-list");
+    
+        // API de Media Session (para notificación y control de música)
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
+            navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
+            navigator.mediaSession.setActionHandler('nexttrack', () => nextSong());
+            navigator.mediaSession.setActionHandler('previoustrack', () => prevSong());
         }
-
-        // Crear el reproductor para cada canción
-        musica.forEach(cancion => {
-            crearCancion(cancion);
+    
+        function loadSongs(songsToShow) {
+            songList.innerHTML = '';
+            songsToShow.forEach((song, index) => {
+                const songItem = document.createElement("div");
+                songItem.classList.add("song");
+                songItem.innerHTML = `
+                    <div class="song-details">
+                        <img src="${song.cover}" alt="${song.title}">
+                        <p>${song.title} - ${song.artist}</p>
+                    </div>
+                `;
+                // Usamos una función anónima para pasar el índice correcto
+                songItem.addEventListener("click", () => playSong(index, songsToShow));
+                songList.appendChild(songItem);
+            });
+        }
+    
+        function playSong(index, songsToShow) {
+            currentSongIndex = index;
+            // Obtenemos el archivo de la canción seleccionada del array filtrado
+            audioPlayer.src = songsToShow[currentSongIndex].file;
+            audioPlayer.play();
+            isPlaying = true;
+            playPauseBtn.textContent = "Pause";
+            expandedPlayer.style.display = "flex";
+            albumCover.src = songsToShow[currentSongIndex].cover;
+            songTitle.textContent = songsToShow[currentSongIndex].title;
+            songArtist.textContent = songsToShow[currentSongIndex].artist;
+            updateProgressBar();
+    
+            // Mostrar información en la barra de notificaciones del teléfono
+            updateMediaSession();
+    
+            // Show minimized player with album cover
+            minimizedAlbumCover.src = songsToShow[currentSongIndex].cover;
+            minimizedPlayer.style.display = "flex";
+        }
+    
+        function updateProgressBar() {
+            audioPlayer.ontimeupdate = () => {
+                const currentTime = audioPlayer.currentTime;
+                const duration = audioPlayer.duration;
+                const progress = (currentTime / duration) * 100;
+                progressBar.style.width = progress + "%";
+                const currentTimeFormatted = formatTime(currentTime);
+                const durationFormatted = formatTime(duration);
+                timeInfo.textContent = `${currentTimeFormatted} / ${durationFormatted}`;
+            };
+        }
+    
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes < 10 ? '0' : ''}${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+    
+        function updateMediaSession() {
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: songs[currentSongIndex].title,
+                    artist: songs[currentSongIndex].artist,
+                    artwork: [{ src: songs[currentSongIndex].cover, sizes: '150x150', type: 'image/png' }]
+                });
+                navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
+            }
+        }
+    
+        playPauseBtn.addEventListener("click", () => {
+            if (isPlaying) {
+                audioPlayer.pause();
+                playPauseBtn.textContent = "Play";
+            } else {
+                audioPlayer.play();
+                playPauseBtn.textContent = "Pause";
+            }
+            isPlaying = !isPlaying;
+            updateMediaSession();
         });
+    
+        nextBtn.addEventListener("click", () => {
+            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            playSong(currentSongIndex, songs);
+        });
+    
+        prevBtn.addEventListener("click", () => {
+            currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+            playSong(currentSongIndex, songs);
+        });
+    
+        minimizePlayerBtn.addEventListener("click", () => {
+            expandedPlayer.style.display = "none";
+            minimizedPlayer.style.display = "flex";
+        });
+    
+        closePlayerBtn.addEventListener("click", () => {
+            expandedPlayer.style.display = "none";
+            audioPlayer.pause();
+            playPauseBtn.textContent = "Play";
+            isPlaying = false;
+        });
+    
+        minimizedPlayer.addEventListener("click", () => {
+            expandedPlayer.style.display = "flex";
+            minimizedPlayer.style.display = "none";
+        });
+    
+        // Descargar la canción actual
+        downloadBtn.addEventListener("click", () => {
+            const link = document.createElement('a');
+            link.href = songs[currentSongIndex].file;
+            link.download = songs[currentSongIndex].title + ".mp3";
+            link.click();
+        });
+    
+        // Filtrar canciones por búsqueda
+        searchBar.addEventListener("input", (event) => {
+            const query = event.target.value.toLowerCase();
+            const filteredSongs = songs.filter(song =>
+                song.title.toLowerCase().includes(query) || song.artist.toLowerCase().includes(query)
+            );
+            loadSongs(filteredSongs);
+        });
+    
+        loadSongs(songs);  // Inicializar con todas las canciones
     </script>
+      <footer style="text-align: center; margin-top: 30px; font-size: 1rem; color: #aaa;">
+        <p>&copy; 2024 Blood_Lyrics66. Tratare de actualizar contenido constantemente.</p>
+        <p>Desarrollado por <a href="https://www.instagram.com/blood_lyrics66/" target="_blank" style="color: #ff0000;">Blood_Lyrics66</a></p>
+    </footer>
 </body>
 </html>
