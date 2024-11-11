@@ -10,7 +10,8 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
+            background-color: #181818;
+            color: #ffffff;
         }
 
         #video-container {
@@ -23,10 +24,15 @@
             width: 300px;
             margin: 20px;
             position: relative;
+            background-color: #222;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
         .video video {
             width: 100%;
+            border-radius: 8px;
         }
 
         .like-button {
@@ -38,6 +44,12 @@
             border: none;
             padding: 10px;
             cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .like-button:hover {
+            background-color: #ff6b81;
         }
     </style>
 </head>
@@ -70,12 +82,14 @@
 
         const renderVideos = () => {
             videoContainer.innerHTML = '';
-            videos.forEach(video => {
+            // Mezclar videos aleatoriamente
+            const shuffledVideos = videos.sort(() => 0.5 - Math.random());
+            shuffledVideos.forEach(video => {
                 const videoElement = document.createElement('div');
                 videoElement.classList.add('video');
                 videoElement.innerHTML = `
                     <video src="${video.src}" controls></video>
-                    <button class="like-button" onclick="likeVideo(${video.id})">
+                    <button class="like-button" onclick="likeVideo(${video.id})" ${video.likes > 0 ? 'disabled' : ''}>
                         Like (${video.likes})
                     </button>
                 `;
@@ -85,9 +99,11 @@
 
         const likeVideo = (id) => {
             const video = videos.find(v => v.id === id);
-            video.likes++;
-            saveLikes();
-            renderVideos();
+            if (video.likes === 0) {
+                video.likes++;
+                saveLikes();
+                renderVideos();
+            }
         };
 
         loadLikes();
