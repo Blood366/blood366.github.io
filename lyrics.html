@@ -16,18 +16,19 @@
         }
 
         #video-container {
-            position: relative;
-            width: 100vw;
             height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
+            transition: transform 0.5s ease; /* Transición suave al cambiar de video */
         }
 
         .video {
             width: 100%;
             height: 100%;
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .video video {
@@ -89,6 +90,7 @@
         ];
 
         const videoContainer = document.getElementById('video-container');
+        let currentIndex = 0;
 
         // Cargar likes desde localStorage
         const loadLikes = () => {
@@ -106,25 +108,23 @@
             localStorage.setItem('likes', JSON.stringify(likes));
         };
 
-        const renderVideos = () => {
+        const renderVideo = () => {
             videoContainer.innerHTML = '';
-            const shuffledVideos = videos.sort(() => 0.5 - Math.random());
-            shuffledVideos.forEach(video => {
-                const videoElement = document.createElement('div');
-                videoElement.classList.add('video');
-                videoElement.innerHTML = `
-                    <video id="video-${video.id}" src="${video.src}" controls></video>
-                    <div class="options">
-                        <button class="rotate-button" onclick="rotateVideo(${video.id})">🔄 Rotar</button>
-                        <button class="download-button" onclick="downloadVideo('${video.src}')">⬇ Descargar</button>
-                        <button class="like-button" onclick="likeVideo(${video.id})" ${video.likes > 0 ? 'disabled' : ''}>
-                            ❤️ (${video.likes})
-                        </button>
-                        <div class="like-count">${video.likes} Likes</div>
-                    </div>
-                `;
-                videoContainer.appendChild(videoElement);
-            });
+            const video = videos[currentIndex];
+            const videoElement = document.createElement('div');
+            videoElement.classList.add('video');
+            videoElement.innerHTML = `
+                <video id="video-${video.id}" src="${video.src}" controls autoplay></video>
+                <div class="options">
+                    <button class="rotate-button" onclick="rotateVideo(${video.id})">🔄 Rotar</button>
+                    <button class="download-button" onclick="downloadVideo('${video.src}')">⬇ Descargar</button>
+                    <button class="like-button" onclick="likeVideo(${video.id})" ${video.likes > 0 ? 'disabled' : ''}>
+                        ❤️ (${video.likes})
+                    </button>
+                    <div class="like-count">${video.likes} Likes</div>
+                </div>
+            `;
+            videoContainer.appendChild(videoElement);
         };
 
         const rotateVideo = (id) => {
@@ -150,12 +150,30 @@
             if (video.likes === 0) {
                 video.likes++;
                 saveLikes();
-                renderVideos();
+                renderVideo();
             }
         };
 
+        const handleSwipe = (direction) => {
+            if (direction === 'up' && currentIndex < videos.length - 1) {
+                currentIndex++;
+            } else if (direction === 'down' && currentIndex > 0) {
+                currentIndex--;
+            }
+            renderVideo();
+        };
+
+        document.addEventListener('wheel', (event) => {
+            if (event.deltaY > 0) {
+                handleSwipe('up');
+            } else {
+                handleSwipe('down');
+            }
+            event.preventDefault(); // Prevenir el desplazamiento de la página
+        });
+
         loadLikes();
-        renderVideos();
+        renderVideo();
     </script>
 </body>
 </html>
