@@ -144,8 +144,8 @@
      
 
         .song-details img {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 5px;
             margin-right: 15px;
         }
@@ -205,10 +205,10 @@
             color: white;
             border: none;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 50px;
             cursor: pointer;
             font-size: 1.2rem;
-            width: 40%;
+            width: 15%;
         }
 
         .controls button:hover {
@@ -241,7 +241,7 @@
 
         .audio-controls .time {
             font-size: 1rem;
-            color: #aaa;
+            color: #727272;
         }
 
         /* Close and Minimize Buttons */
@@ -249,6 +249,10 @@
             position: absolute;
             top: 20px;
             right: 20px;
+            width: 40px;
+            height: 40px;
+            top: 20px;
+            
             background-color: #e60000;
             color: white;
             border: none;
@@ -259,7 +263,7 @@
         }
 
         .close-btn:hover, .minimize-btn:hover {
-            background-color: #ff0000;
+            background-color: #5c5c5c;
         }
 
         .minimize-btn {
@@ -271,12 +275,12 @@
         .minimized-player {
             position: fixed;
             top: 20px;
-            right: 20px;
+            left: 20px;
             width: 50px;
             height: 50px;
-            background-color: #222;
+            background-color: #630000;
             border-radius: 50%;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(78, 78, 78, 0.3);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -286,8 +290,8 @@
         }
 
         .minimized-player img {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
         }
 
@@ -368,10 +372,10 @@
             </div>
 
             <div class="controls">
-                <button id="prevBtn">Prev</button>
-                <button id="playPauseBtn">Play</button>
-                <button id="nextBtn">Next</button>
-                <button id="downloadBtn">Download</button>
+                <button id="prevBtn">⏮️</button>
+                <button id="playPauseBtn">▶️</button>
+                <button id="nextBtn">⏭️</button>
+                <button id="downloadBtn">🔽</button>
             </div>
         </div>
     </div>
@@ -385,21 +389,21 @@
         const songs = [
             { title: "Ultima Cena", artist: "Hades66", file: "ULTIMACENA.mp3", cover: "ULTIMACENA.png" },
             { title: "A Solas Remix", artist: "Lunay", file: "asolasR.mp3", cover: "asolasR.jpg" },
-            { title: "Song 3", artist: "Artist 3", file: ".mp3", cover: ".jpg" },
-            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
-            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
-            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
-            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
-            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
-            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
-            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
-            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
-            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
-            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
-            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
-            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
-            { title: "A Solas Remix", artist: "Artist 2", file: "asolasR.mp3", cover: "asolasR.jpg" },
-            { title: "Song 4", artist: "Artist 4", file: "songs/song4.mp3", cover: "covers/cover4.jpg" }
+            { title: "23 Preguntas", artist: "Anuel AA", file: "23.mp3", cover: "23.jpg" },
+            { title: "Ojos De Angel", artist: "Anuel AA", file: "ojosa.mp3", cover: "ojosa.jpg" },
+            { title: "Emociones", artist: "Hades66", file: "emociones.mp3", cover: "emociones.jpg" },
+            { title: "Que Nos Paso?", artist: "Anuel AA", file: "qnp.mp3", cover: "qnp.jpg" },
+            { title: "Antes Y Despues", artist: "Anuel AA", file: "ayd.mp3", cover: "ayd.jpg" },
+            { title: "Ayer", artist: "Anuel AA", file: "ayer.mp3", cover: "ayer.jpg" },
+            { title: "Fundota", artist: "Bryant Myers", file: "fund.mp3", cover: "fund.jpg" },
+            { title: "Intro 2", artist: "Hades66", file: "int2.mp3", cover: "int2.jpg" },
+            { title: "La Llamada", artist: "Trap Capos", file: "llamada.mp3", cover: "llmada.jpg" },
+            { title: "Side Bitch", artist: "Luar La L", file: "sb.mp3", cover: "sb.jpg" },
+            { title: "Street Poem", artist: "Anuel AA", file: "sp.mp3", cover: "sp.jpg" },
+            { title: "Juicy", artist: "Hades66", file: "juicy.mp3", cover: "juicy.jpg" },
+            { title: "Monstruo", artist: "Anuel AA", file: "mst.mp3", cover: "mst.jpg" },
+            { title: "No Eres Mia", artist: "Bryant Myers", file: "nem.mp3", cover: "nem.jpg" },
+            { title: "Nota", artist: "Eladio Carrion", file: "nota.mp3", cover: "nota.jpg" }
         ];
     
         let currentSongIndex = 0;
@@ -453,7 +457,7 @@
             audioPlayer.src = songsToShow[currentSongIndex].file;
             audioPlayer.play();
             isPlaying = true;
-            playPauseBtn.textContent = "Pause";
+            playPauseBtn.textContent = "⏸";
             expandedPlayer.style.display = "flex";
             albumCover.src = songsToShow[currentSongIndex].cover;
             songTitle.textContent = songsToShow[currentSongIndex].title;
@@ -500,10 +504,10 @@
         playPauseBtn.addEventListener("click", () => {
             if (isPlaying) {
                 audioPlayer.pause();
-                playPauseBtn.textContent = "Play";
+                playPauseBtn.textContent = "▶️";
             } else {
                 audioPlayer.play();
-                playPauseBtn.textContent = "Pause";
+                playPauseBtn.textContent = "⏸";
             }
             isPlaying = !isPlaying;
             updateMediaSession();
