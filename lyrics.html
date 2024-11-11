@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        #video-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .video {
+            width: 300px;
+            margin: 20px;
+            position: relative;
+        }
+
+        .video video {
+            width: 100%;
+        }
+
+        .like-button {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="video-container"></div>
+    <script>
+        const videos = [
+            { id: 1, src: 'video1.mp4', likes: 0 },
+            { id: 2, src: 'video2.mp4', likes: 0 },
+            // Agrega más videos aquí
+        ];
+
+        const videoContainer = document.getElementById('video-container');
+
+        // Cargar likes desde localStorage
+        const loadLikes = () => {
+            const likes = JSON.parse(localStorage.getItem('likes')) || {};
+            videos.forEach(video => {
+                video.likes = likes[video.id] || 0;
+            });
+        };
+
+        const saveLikes = () => {
+            const likes = {};
+            videos.forEach(video => {
+                likes[video.id] = video.likes;
+            });
+            localStorage.setItem('likes', JSON.stringify(likes));
+        };
+
+        const renderVideos = () => {
+            videoContainer.innerHTML = '';
+            videos.forEach(video => {
+                const videoElement = document.createElement('div');
+                videoElement.classList.add('video');
+                videoElement.innerHTML = `
+                    <video src="${video.src}" controls></video>
+                    <button class="like-button" onclick="likeVideo(${video.id})">
+                        Like (${video.likes})
+                    </button>
+                `;
+                videoContainer.appendChild(videoElement);
+            });
+        };
+
+        const likeVideo = (id) => {
+            const video = videos.find(v => v.id === id);
+            video.likes++;
+            saveLikes();
+            renderVideos();
+        };
+
+        loadLikes();
+        renderVideos();
+    </script>
+</body>
+</html>
