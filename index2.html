@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiplayer Game</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"></script>
+</head>
+<body>
+  <div id="game-container">
+    <h1>🪨 Piedra, 📄 Papel o ✂️ Tijera</h1>
+    <div id="game-status">
+      <p id="status-text">Esperando a otro jugador...</p>
+    </div>
+    <div id="player-move">
+      <h2>Selecciona tu movimiento:</h2>
+      <button class="move" data-move="rock">🪨 Piedra</button>
+      <button class="move" data-move="paper">📄 Papel</button>
+      <button class="move" data-move="scissors">

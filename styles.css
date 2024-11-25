@@ -1,0 +1,36 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #282c34;
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #game-container {
+    margin-top: 50px;
+  }
+  
+  button {
+    font-size: 18px;
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #61dafb;
+  }
+  
+  #result {
+    margin-top: 20px;
+  }
+  
+  #status-text {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  
