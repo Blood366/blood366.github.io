@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Player</title>
+    <title>Blood Music</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         /* General Styles */
@@ -49,7 +49,23 @@
     100% {
         text-shadow: 0 0 20px rgb(138, 0, 0)/* Brillo máximo, sombra roja */
     }
-}
+}   /* Botón para cargar más canciones */
+        .load-more-btn {
+            background-color: #ff0000;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .load-more-btn:hover {
+            background-color: #e60000;
+        }
 
         .music-container {
             width: 90%;
@@ -350,10 +366,11 @@
 
     <div class="music-container">
         <div class="song-list" id="song-list">
-            <!-- Songs will be dynamically added here -->
+            <!-- Las canciones se agregarán dinámicamente aquí -->
         </div>
+        <button class="load-more-btn" id="loadMoreBtn">Cargar más canciones</button>
     </div>
-
+    
     <!-- Expanded Player (superimposed) -->
     <div class="expanded-player" id="expanded-player">
         <div class="player-content">
@@ -384,9 +401,20 @@
     <div class="minimized-player" id="minimizedPlayer" style="display: none;">
         <img id="minimizedAlbumCover" src="" alt="Minimized Cover">
     </div>
-
     <script>
         const songs = [
+        { title: "Si tu me buscas", artist: "Anuel AA", file: "situmebuscara.mp3", cover: "situmebuscara.png" },
+        { title: "47 Remix", artist: "Anuel AA", file: "47r.mp3", cover: "47r.png" },
+        { title: "Gan Ga", artist: "Bryant Myers", file: "gangaBM.mp3", cover: "gangaBM.png" },
+        { title: "Dilema", artist: "Jhayco", file: "dilema.mp3", cover: "dilema.png" },
+        { title: "Ausente", artist: "Eladio Carrion, Amenazzy", file: "ausente.mp3", cover: "ausente.png" },
+        { title: "Una Noti", artist: "Omar Courtz", file: "unanoti.mp3", cover: "unanoti.png" },
+        { title: "Air Drop", artist: "Bryant Myers", file: "airdrop.mp3", cover: "airdrop.png" },
+        { title: "Caile", artist: "Luar La L", file: "cailel.mp3", cover: "cailel.png" },
+        { title: "Mantecado de coco Remix", artist: "Flow La Movie, Arcangel, Bryant Myers, Amenazzy, Nio Garcia, Alex Rose, Young Blade", file: "mdcr.mp3", cover: "mdcr.png" },
+        { title: "Se Fue", artist: "Rauw Alejandro, Laura Pausini", file: "sefue.mp3", cover: "sefue.png" },
+        { title: "Si tu me buscas", artist: "Anuel AA, Yailin La Mas Viral", file: "situmebuscar.mp3", cover: "situmebuscar.png" },
+
             { title: "Ultima Cena", artist: "Hades66", file: "ULTIMACENA.mp3", cover: "ULTIMACENA.png" },
             { title: "A Solas Remix", artist: "Lunay", file: "asolasR.mp3", cover: "asolasR.jpg" },
             { title: "23 Preguntas", artist: "Anuel AA", file: "23.mp3", cover: "23.jpg" },
@@ -408,32 +436,22 @@
     
         let currentSongIndex = 0;
         let isPlaying = false;
-        const audioPlayer = new Audio(songs[currentSongIndex].file);
+        const audioPlayer = new Audio();
         const progressBar = document.getElementById("progress-bar");
         const timeInfo = document.getElementById("time-info");
         const playPauseBtn = document.getElementById("playPauseBtn");
-        const prevBtn = document.getElementById("prevBtn");
-        const nextBtn = document.getElementById("nextBtn");
         const albumCover = document.getElementById("albumCover");
         const songTitle = document.getElementById("songTitle");
         const songArtist = document.getElementById("songArtist");
-        const closePlayerBtn = document.getElementById("closePlayerBtn");
-        const minimizePlayerBtn = document.getElementById("minimizePlayerBtn");
-        const expandedPlayer = document.getElementById("expanded-player");
-        const minimizedPlayer = document.getElementById("minimizedPlayer");
         const minimizedAlbumCover = document.getElementById("minimizedAlbumCover");
         const downloadBtn = document.getElementById("downloadBtn");
         const searchBar = document.getElementById("searchBar");
         const songList = document.getElementById("song-list");
+        const loadMoreBtn = document.getElementById("loadMoreBtn");
     
-        // API de Media Session (para notificación y control de música)
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.setActionHandler('play', () => togglePlayPause());
-            navigator.mediaSession.setActionHandler('pause', () => togglePlayPause());
-            navigator.mediaSession.setActionHandler('nexttrack', () => nextSong());
-            navigator.mediaSession.setActionHandler('previoustrack', () => prevSong());
-        }
+        let currentDisplayedSongs = []; // Canciones actualmente en la lista
     
+        // Función para cargar canciones en el DOM
         function loadSongs(songsToShow) {
             songList.innerHTML = '';
             songsToShow.forEach((song, index) => {
@@ -445,33 +463,26 @@
                         <p>${song.title} - ${song.artist}</p>
                     </div>
                 `;
-                // Usamos una función anónima para pasar el índice correcto
                 songItem.addEventListener("click", () => playSong(index, songsToShow));
                 songList.appendChild(songItem);
             });
+            currentDisplayedSongs = songsToShow;
         }
     
+        // Función para reproducir la canción seleccionada
         function playSong(index, songsToShow) {
             currentSongIndex = index;
-            // Obtenemos el archivo de la canción seleccionada del array filtrado
             audioPlayer.src = songsToShow[currentSongIndex].file;
             audioPlayer.play();
             isPlaying = true;
             playPauseBtn.textContent = "⏸";
-            expandedPlayer.style.display = "flex";
             albumCover.src = songsToShow[currentSongIndex].cover;
             songTitle.textContent = songsToShow[currentSongIndex].title;
             songArtist.textContent = songsToShow[currentSongIndex].artist;
             updateProgressBar();
-    
-            // Mostrar información en la barra de notificaciones del teléfono
-            updateMediaSession();
-    
-            // Show minimized player with album cover
-            minimizedAlbumCover.src = songsToShow[currentSongIndex].cover;
-            minimizedPlayer.style.display = "flex";
         }
     
+        // Actualización de la barra de progreso
         function updateProgressBar() {
             audioPlayer.ontimeupdate = () => {
                 const currentTime = audioPlayer.currentTime;
@@ -484,81 +495,40 @@
             };
         }
     
+        // Función para generar 10 canciones aleatorias de la lista
+        function getRandomSongs(count) {
+            const shuffled = songs.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, count);
+        }
+    
+        // Manejar la carga inicial
+        document.addEventListener("DOMContentLoaded", () => {
+            loadSongs(getRandomSongs(10));
+        });
+    
+        // Manejar la carga de más canciones aleatorias
+        loadMoreBtn.addEventListener("click", () => {
+            loadSongs(getRandomSongs(10));
+        });
+    
+        // Manejar el filtrado de canciones por búsqueda
+        searchBar.addEventListener("input", (event) => {
+            const query = event.target.value.toLowerCase();
+            const filteredSongs = songs.filter(song =>
+                song.title.toLowerCase().includes(query) ||
+                song.artist.toLowerCase().includes(query)
+            );
+            loadSongs(filteredSongs.length > 0 ? filteredSongs : getRandomSongs(10));
+        });
+    
+        // Función para formatear el tiempo en minutos y segundos
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const secs = Math.floor(seconds % 60);
             return `${minutes < 10 ? '0' : ''}${minutes}:${secs < 10 ? '0' : ''}${secs}`;
         }
-    
-        function updateMediaSession() {
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: songs[currentSongIndex].title,
-                    artist: songs[currentSongIndex].artist,
-                    artwork: [{ src: songs[currentSongIndex].cover, sizes: '150x150', type: 'image/png' }]
-                });
-                navigator.mediaSession.playbackState = isPlaying ? 'playing' : 'paused';
-            }
-        }
-    
-        playPauseBtn.addEventListener("click", () => {
-            if (isPlaying) {
-                audioPlayer.pause();
-                playPauseBtn.textContent = "▶️";
-            } else {
-                audioPlayer.play();
-                playPauseBtn.textContent = "⏸";
-            }
-            isPlaying = !isPlaying;
-            updateMediaSession();
-        });
-    
-        nextBtn.addEventListener("click", () => {
-            currentSongIndex = (currentSongIndex + 1) % songs.length;
-            playSong(currentSongIndex, songs);
-        });
-    
-        prevBtn.addEventListener("click", () => {
-            currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-            playSong(currentSongIndex, songs);
-        });
-    
-        minimizePlayerBtn.addEventListener("click", () => {
-            expandedPlayer.style.display = "none";
-            minimizedPlayer.style.display = "flex";
-        });
-    
-        closePlayerBtn.addEventListener("click", () => {
-            expandedPlayer.style.display = "none";
-            audioPlayer.pause();
-            playPauseBtn.textContent = "Play";
-            isPlaying = false;
-        });
-    
-        minimizedPlayer.addEventListener("click", () => {
-            expandedPlayer.style.display = "flex";
-            minimizedPlayer.style.display = "none";
-        });
-    
-        // Descargar la canción actual
-        downloadBtn.addEventListener("click", () => {
-            const link = document.createElement('a');
-            link.href = songs[currentSongIndex].file;
-            link.download = songs[currentSongIndex].title + ".mp3";
-            link.click();
-        });
-    
-        // Filtrar canciones por búsqueda
-        searchBar.addEventListener("input", (event) => {
-            const query = event.target.value.toLowerCase();
-            const filteredSongs = songs.filter(song =>
-                song.title.toLowerCase().includes(query) || song.artist.toLowerCase().includes(query)
-            );
-            loadSongs(filteredSongs);
-        });
-    
-        loadSongs(songs);  // Inicializar con todas las canciones
     </script>
+        
       <footer style="text-align: center; margin-top: 30px; font-size: 1rem; color: #aaa;">
         <p>&copy; 2024 Blood_Lyrics66. Tratare de actualizar contenido constantemente.</p>
         <p>Desarrollado por <a href="https://www.instagram.com/blood_lyrics66/" target="_blank" style="color: #ff0000;">Blood_Lyrics66</a></p>
