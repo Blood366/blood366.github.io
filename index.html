@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blood Music</title>
+    <title>Music Player</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         /* General Styles */
@@ -432,103 +432,119 @@
             { title: "Monstruo", artist: "Anuel AA", file: "mst.mp3", cover: "mst.jpg" },
             { title: "No Eres Mia", artist: "Bryant Myers", file: "nem.mp3", cover: "nem.jpg" },
             { title: "Nota", artist: "Eladio Carrion", file: "nota.mp3", cover: "nota.jpg" }
-        ];
-    
-        let currentSongIndex = 0;
-        let isPlaying = false;
-        const audioPlayer = new Audio();
-        const progressBar = document.getElementById("progress-bar");
-        const timeInfo = document.getElementById("time-info");
-        const playPauseBtn = document.getElementById("playPauseBtn");
-        const albumCover = document.getElementById("albumCover");
-        const songTitle = document.getElementById("songTitle");
-        const songArtist = document.getElementById("songArtist");
-        const minimizedAlbumCover = document.getElementById("minimizedAlbumCover");
-        const downloadBtn = document.getElementById("downloadBtn");
-        const searchBar = document.getElementById("searchBar");
-        const songList = document.getElementById("song-list");
-        const loadMoreBtn = document.getElementById("loadMoreBtn");
-    
-        let currentDisplayedSongs = []; // Canciones actualmente en la lista
-    
-        // Función para cargar canciones en el DOM
-        function loadSongs(songsToShow) {
-            songList.innerHTML = '';
-            songsToShow.forEach((song, index) => {
-                const songItem = document.createElement("div");
-                songItem.classList.add("song");
-                songItem.innerHTML = `
-                    <div class="song-details">
-                        <img src="${song.cover}" alt="${song.title}">
-                        <p>${song.title} - ${song.artist}</p>
-                    </div>
-                `;
-                songItem.addEventListener("click", () => playSong(index, songsToShow));
-                songList.appendChild(songItem);
-            });
-            currentDisplayedSongs = songsToShow;
-        }
-    
-        // Función para reproducir la canción seleccionada
-        function playSong(index, songsToShow) {
-            currentSongIndex = index;
-            audioPlayer.src = songsToShow[currentSongIndex].file;
-            audioPlayer.play();
-            isPlaying = true;
-            playPauseBtn.textContent = "⏸";
-            albumCover.src = songsToShow[currentSongIndex].cover;
-            songTitle.textContent = songsToShow[currentSongIndex].title;
-            songArtist.textContent = songsToShow[currentSongIndex].artist;
-            updateProgressBar();
-        }
-    
-        // Actualización de la barra de progreso
-        function updateProgressBar() {
-            audioPlayer.ontimeupdate = () => {
-                const currentTime = audioPlayer.currentTime;
-                const duration = audioPlayer.duration;
-                const progress = (currentTime / duration) * 100;
-                progressBar.style.width = progress + "%";
-                const currentTimeFormatted = formatTime(currentTime);
-                const durationFormatted = formatTime(duration);
-                timeInfo.textContent = `${currentTimeFormatted} / ${durationFormatted}`;
-            };
-        }
-    
-        // Función para generar 10 canciones aleatorias de la lista
-        function getRandomSongs(count) {
-            const shuffled = songs.sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, count);
-        }
-    
-        // Manejar la carga inicial
-        document.addEventListener("DOMContentLoaded", () => {
-            loadSongs(getRandomSongs(10));
-        });
-    
-        // Manejar la carga de más canciones aleatorias
-        loadMoreBtn.addEventListener("click", () => {
-            loadSongs(getRandomSongs(10));
-        });
-    
-        // Manejar el filtrado de canciones por búsqueda
-        searchBar.addEventListener("input", (event) => {
-            const query = event.target.value.toLowerCase();
-            const filteredSongs = songs.filter(song =>
-                song.title.toLowerCase().includes(query) ||
-                song.artist.toLowerCase().includes(query)
-            );
-            loadSongs(filteredSongs.length > 0 ? filteredSongs : getRandomSongs(10));
-        });
-    
-        // Función para formatear el tiempo en minutos y segundos
-        function formatTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${minutes < 10 ? '0' : ''}${minutes}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-    </script>
-        
+      
+            ];
+
+let currentSongIndex = 0;
+let isPlaying = false;
+const audioPlayer = new Audio();
+const progressBar = document.getElementById("progress-bar");
+const timeInfo = document.getElementById("time-info");
+const playPauseBtn = document.getElementById("playPauseBtn");
+const albumCover = document.getElementById("albumCover");
+const songTitle = document.getElementById("songTitle");
+const songArtist = document.getElementById("songArtist");
+const minimizedAlbumCover = document.getElementById("minimizedAlbumCover");
+const downloadBtn = document.getElementById("downloadBtn");
+const searchBar = document.getElementById("searchBar");
+const songList = document.getElementById("song-list");
+const loadMoreBtn = document.getElementById("loadMoreBtn");
+
+let currentDisplayedSongs = [];
+
+// Función para cargar canciones en el DOM
+function loadSongs(songsToShow) {
+    songList.innerHTML = '';
+    songsToShow.forEach((song, index) => {
+        const songItem = document.createElement("div");
+        songItem.classList.add("song");
+        songItem.innerHTML = `
+            <div class="song-details">
+                <img src="${song.cover}" alt="${song.title}">
+                <p>${song.title} - ${song.artist}</p>
+            </div>
+        `;
+        songItem.addEventListener("click", () => playSong(index, songsToShow));
+        songList.appendChild(songItem);
+    });
+    currentDisplayedSongs = songsToShow;
+}
+
+// Función para reproducir la canción seleccionada
+function playSong(index, songsToShow) {
+    currentSongIndex = index;
+    audioPlayer.src = songsToShow[currentSongIndex].file;
+    audioPlayer.play().catch(error => console.log('Error al reproducir:', error));
+    isPlaying = true;
+    playPauseBtn.textContent = "⏸";
+    albumCover.src = songsToShow[currentSongIndex].cover;
+    songTitle.textContent = songsToShow[currentSongIndex].title;
+    songArtist.textContent = songsToShow[currentSongIndex].artist;
+
+    // Mostrar el reproductor expandido
+    document.getElementById("expanded-player").style.display = "flex";
+    document.getElementById("minimizedPlayer").style.display = "none";
+
+    updateProgressBar();
+}
+
+// Función para cerrar el reproductor
+document.getElementById("closePlayerBtn").addEventListener("click", () => {
+    document.getElementById("expanded-player").style.display = "none";
+    audioPlayer.pause();
+    isPlaying = false;
+});
+
+// Función para minimizar el reproductor
+document.getElementById("minimizePlayerBtn").addEventListener("click", () => {
+    document.getElementById("expanded-player").style.display = "none";
+    document.getElementById("minimizedPlayer").style.display = "flex";
+    minimizedAlbumCover.src = albumCover.src; // Actualizar la portada en el minimizado
+});
+
+// Actualización de la barra de progreso
+function updateProgressBar() {
+    audioPlayer.ontimeupdate = () => {
+        const currentTime = audioPlayer.currentTime || 0;
+        const duration = audioPlayer.duration || 1;
+        const progress = (currentTime / duration) * 100;
+        progressBar.style.width = progress + "%";
+        timeInfo.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+    };
+}
+
+// Función para filtrar canciones por búsqueda
+searchBar.addEventListener("input", (event) => {
+    const query = event.target.value.toLowerCase();
+    const filteredSongs = songs.filter(song =>
+        song.title.toLowerCase().includes(query) ||
+        song.artist.toLowerCase().includes(query)
+    );
+    loadSongs(filteredSongs);
+});
+
+// Función para cargar 10 canciones aleatorias
+function getRandomSongs(count) {
+    const shuffled = [...songs].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+}
+
+// Cargar más canciones aleatorias al hacer clic
+loadMoreBtn.addEventListener("click", () => {
+    loadSongs(getRandomSongs(10));
+});
+
+// Función para formatear el tiempo en minutos y segundos
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${minutes < 10 ? '0' : ''}${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+// Manejar la carga inicial
+document.addEventListener("DOMContentLoaded", () => {
+    loadSongs(getRandomSongs(10));
+});</script>
       <footer style="text-align: center; margin-top: 30px; font-size: 1rem; color: #aaa;">
         <p>&copy; 2024 Blood_Lyrics66. Tratare de actualizar contenido constantemente.</p>
         <p>Desarrollado por <a href="https://www.instagram.com/blood_lyrics66/" target="_blank" style="color: #ff0000;">Blood_Lyrics66</a></p>
