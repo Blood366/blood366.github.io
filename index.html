@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Player</title>
+    <title>Blood Lyrics</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         /* General Styles */
@@ -337,7 +337,26 @@
             audio {
                 margin-top: 20px;
             }
+
+            /* Botón de carga más */
+        .load-more {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+            margin-top: 15px;
         }
+
+        .load-more:hover {
+            background-color: #e60000;
+        }
+        }
+            
     </style>
 </head>
 <body>
@@ -345,13 +364,14 @@
     <h1>Blood_Lyrics</h1> 
 
     
-    <!-- Search Bar -->
+     <!-- Search Bar -->
     <input type="text" class="search-bar" id="searchBar" placeholder="Buscar canciones...">
 
     <div class="music-container">
         <div class="song-list" id="song-list">
             <!-- Songs will be dynamically added here -->
         </div>
+        <button class="load-more" id="loadMoreBtn">Cargar más</button>
     </div>
 
     <!-- Expanded Player (superimposed) -->
@@ -512,7 +532,75 @@
             isPlaying = !isPlaying;
             updateMediaSession();
         });
-    
+     <script>
+        const songs = [
+            { title: "Ultima Cena", artist: "Hades66", file: "ULTIMACENA.mp3", cover: "ULTIMACENA.png" },
+            { title: "A Solas Remix", artist: "Lunay", file: "asolasR.mp3", cover: "asolasR.jpg" },
+            { title: "23 Preguntas", artist: "Anuel AA", file: "23.mp3", cover: "23.jpg" },
+            { title: "Ojos De Angel", artist: "Anuel AA", file: "ojosa.mp3", cover: "ojosa.jpg" },
+            { title: "Emociones", artist: "Hades66", file: "emociones.mp3", cover: "emociones.jpg" },
+            { title: "Que Nos Paso?", artist: "Anuel AA", file: "qnp.mp3", cover: "qnp.jpg" },
+            { title: "Antes Y Despues", artist: "Anuel AA", file: "ayd.mp3", cover: "ayd.jpg" },
+            { title: "Ayer", artist: "Anuel AA", file: "ayer.mp3", cover: "ayer.jpg" },
+            { title: "Fundota", artist: "Bryant Myers", file: "fund.mp3", cover: "fund.jpg" },
+            { title: "Intro 2", artist: "Hades66", file: "int2.mp3", cover: "int2.jpg" },
+            { title: "La Llamada", artist: "Trap Capos", file: "llamada.mp3", cover: "llmada.jpg" },
+            { title: "Side Bitch", artist: "Luar La L", file: "sb.mp3", cover: "sb.jpg" },
+            { title: "Street Poem", artist: "Anuel AA", file: "sp.mp3", cover: "sp.jpg" },
+            { title: "Juicy", artist: "Hades66", file: "juicy.mp3", cover: "juicy.jpg" },
+            { title: "Monstruo", artist: "Anuel AA", file: "mst.mp3", cover: "mst.jpg" },
+            { title: "No Eres Mia", artist: "Bryant Myers", file: "nem.mp3", cover: "nem.jpg" },
+            { title: "Nota", artist: "Eladio Carrion", file: "nota.mp3", cover: "nota.jpg" }
+        ];
+        
+        let currentSongIndex = 0;
+        const songsPerPage = 15;
+
+        function loadSongs(songsToShow) {
+            const songList = document.getElementById('song-list');
+            const fragment = document.createDocumentFragment(); // Evitar múltiples reflujo del DOM
+            for (let i = currentSongIndex; i < currentSongIndex + songsPerPage && i < songsToShow.length; i++) {
+                const song = songsToShow[i];
+                const songItem = document.createElement('div');
+                songItem.classList.add('song');
+                songItem.innerHTML = `
+                    <div class="song-details">
+                        <img src="${song.cover}" alt="${song.title}">
+                        <p>${song.title} - ${song.artist}</p>
+                    </div>
+                `;
+                songItem.addEventListener('click', () => playSong(i, songsToShow));
+                fragment.appendChild(songItem);
+            }
+            songList.appendChild(fragment);
+
+            currentSongIndex += songsPerPage;
+
+            // Ocultar botón si se muestran todas las canciones
+            if (currentSongIndex >= songsToShow.length) {
+                document.getElementById('loadMoreBtn').style.display = 'none';
+            }
+        }
+
+        // Inicializar con las primeras canciones
+        loadSongs(songs);
+
+        document.getElementById('loadMoreBtn').addEventListener('click', () => {
+            loadSongs(songs);
+        });
+
+        // Filtrar canciones por búsqueda
+        document.getElementById('searchBar').addEventListener('input', (event) => {
+            const query = event.target.value.toLowerCase();
+            const filteredSongs = songs.filter(song =>
+                song.title.toLowerCase().includes(query) || song.artist.toLowerCase().includes(query)
+            );
+            currentSongIndex = 0; // Reiniciar el índice de carga
+            document.getElementById('song-list').innerHTML = '';
+            loadSongs(filteredSongs);
+            document.getElementById('loadMoreBtn').style.display = (filteredSongs.length > songsPerPage) ? 'block' : 'none';
+        });
+    </script>
         nextBtn.addEventListener("click", () => {
             currentSongIndex = (currentSongIndex + 1) % songs.length;
             playSong(currentSongIndex, songs);
