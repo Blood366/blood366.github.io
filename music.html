@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letra de Canción Automática</title>
+    <style>
+        /* Estilo General */
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #121212;
+            color: #fff;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* Contenedor de la canción */
+        .container {
+            width: 80%;
+            max-width: 900px;
+            text-align: center;
+            margin: 20px;
+        }
+
+        /* Cuadro de texto de entrada */
+        .input-area {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 800px;
+            background-color: #222;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            display: none; /* Inicialmente oculta */
+        }
+
+        .input-area textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px;
+            background-color: #333;
+            border: 1px solid #555;
+            color: white;
+            font-size: 18px;
+            border-radius: 5px;
+            box-sizing: border-box;
+            resize: none;
+        }
+
+        .button, .settings-button {
+            padding: 10px 20px;
+            background-color: #444;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .button:hover, .settings-button:hover {
+            background-color: #666;
+        }
+
+        .button, .settings-button2 {
+        
+    padding: 10px 20px;
+    background-color: #444;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    
+    position: fixed;
+    bottom: 20px;  /* Ajusta la distancia desde el borde inferior */
+    left: 20px;    /* Ajusta la distancia desde el borde izquierdo */
+}
+
+
+        
+        /* Panel de configuración centrado y rectangular */
+        .settings {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgb(0, 0, 0);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            z-index: 10;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            display: none; /* Inicialmente oculta */
+        }
+
+        .settings label {
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .settings input, .settings select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            background-color: #333;
+            border: 1px solid #555;
+            color: white;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+
+        .settings button {
+            padding: 12px 20px;
+            background-color: #444;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .settings button:hover {
+            background-color: #555;
+        }
+
+        /* Botón flotante de configuración */
+        .settings-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            padding: 10px 20px;
+            background-color: #444;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .settings-button:hover {
+            background-color: #666;
+        }
+
+        /* Panel de la letra */
+        .song-container {
+            width: 100vw;
+            
+            max-width: 900vw;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .texto {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s, transform 1s ease-out;
+        }
+
+        .active {
+            display: block;
+            opacity: 1;
+        }
+
+        .slide-enter {
+            transform: translateX(100%);
+        }
+
+        .slide-active {
+            transform: translateX(0);
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Área para ingresar la letra -->
+<div class="input-area" id="inputArea">
+    <h3>Introduce la letra de la canción</h3>
+    <textarea id="inputText" placeholder="Escribe o pega la letra aquí..." oninput="updateExample()"></textarea>
+    <button  onclick="startSong()">Mostrar Canción</button>
+</div>
+
+<!-- Área para mostrar la letra -->
+<div class="song-container" id="songContainer">
+    <!-- Las letras se agregarán aquí dinámicamente -->
+</div>
+
+<!-- Panel de configuración -->
+<div class="settings" id="settingsPanel">
+    <h3>Configuración</h3>
+
+    <label for="fontColor">Color de la letra:</label>
+    <input class="cajatex" type="color" id="fontColor" value="#ffffff" onchange="updateExample()" style="width: 20px; height: 20px;">
+    
+    <label for="bgColor">Color de fondo:</label>
+    <input type="color" id="bgColor" value="#121212" onchange="updateExample()">
+
+    <label for="fontFamily">Fuente de la letra:</label>
+    <select id="fontFamily" onchange="updateExample()">
+        <option value="Arial">Arial</option>
+        <option value="Courier New">Courier New</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Verdana">Verdana</option>
+    </select>
+
+    <label for="fontSize">Tamaño de la letra:</label>
+    <input type="number" id="fontSize" value="18" min="10" max="48" onchange="updateExample()">
+
+    <label for="fontStyle">Estilo de letra:</label>
+    <input type="checkbox" id="fontBold" onchange="updateExample()"> Negrita
+    <input type="checkbox" id="fontItalic" onchange="updateExample()"> Cursiva
+
+    <div class="example" id="exampleText">
+        Ejemplo de texto con las configuraciones actuales.
+    </div>
+
+    <button onclick="applyChanges()">Aplicar Cambios</button>
+
+    
+
+    <button onclick="toggleSettings()">Cerrar Configuración</button>
+</div>
+
+<!-- Botón de configuración flotante -->
+<button class="settings-button" onclick="toggleSettings()">Abrir Configuración</button>
+<button class="settings-button2" onclick="toggleInputArea()">Abrir Caja de Texto</button>
+<script>
+    let currentLine = 0;
+    let lines = [];
+    const settingsPanel = document.getElementById('settingsPanel');
+    const inputArea = document.getElementById('inputArea');
+    let animationType = 'fade';  // Animación por defecto
+
+    // Función para empezar la canción
+    function startSong() {
+        const inputText = document.getElementById('inputText').value.trim();
+        if (inputText === "") {
+            alert("Por favor, ingresa la letra de la canción.");
+            return;
+        }
+        
+        // Limpiar contenedor y agregar la letra línea por línea
+        const songContainer = document.getElementById('songContainer');
+        songContainer.innerHTML = "";  // Limpiar contenedor
+        lines = inputText.split("\n");  // Separar letra por líneas
+
+        // Crear los elementos de las líneas
+        lines.forEach(line => {
+            const lineElement = document.createElement("div");
+            lineElement.classList.add("texto");
+            lineElement.innerText = line;
+            songContainer.appendChild(lineElement);
+        });
+
+        // Ocultar el cuadro de texto
+        inputArea.style.display = 'none';
+
+        // Mostrar la primera línea
+        nextLine();
+    }
+
+    // Función para mostrar la siguiente línea
+    function nextLine() {
+        if (currentLine >= lines.length) return;
+
+        const line = document.querySelectorAll('.texto')[currentLine];
+        line.classList.remove('active');
+        currentLine = (currentLine + 1) % lines.length;
+
+        document.querySelectorAll('.texto')[currentLine].classList.add('active');
+    }
+
+    // Detectar la tecla Enter
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            nextLine();
+        }
+    });
+
+    // Detectar clic en la pantalla
+    document.addEventListener('click', nextLine);
+
+    // Función para actualizar la vista previa del ejemplo
+    function updateExample() {
+        const fontColor = document.getElementById('fontColor').value;
+        const bgColor = document.getElementById('bgColor').value;
+        const fontFamily = document.getElementById('fontFamily').value;
+        const fontSize = document.getElementById('fontSize').value;
+        const isBold = document.getElementById('fontBold').checked;
+        const isItalic = document.getElementById('fontItalic').checked;
+
+        const exampleText = document.getElementById('exampleText');
+        
+        exampleText.style.color = fontColor;
+        exampleText.style.backgroundColor = bgColor;
+        exampleText.style.fontFamily = fontFamily;
+        exampleText.style.fontSize = fontSize + "px";
+        exampleText.style.fontWeight = isBold ? 'bold' : 'normal';
+        exampleText.style.fontStyle = isItalic ? 'italic' : 'normal';
+    }
+
+    // Función para mostrar u ocultar el panel de configuración
+    function toggleSettings() {
+        if (settingsPanel.style.display === 'none' || settingsPanel.style.display === '') {
+            settingsPanel.style.display = 'block';
+        } else {
+            settingsPanel.style.display = 'none';
+        }
+    }
+
+    // Función para mostrar la caja de texto de entrada
+    function toggleInputArea() {
+            inputArea.style.display = (inputArea.style.display === 'block') ? 'none' : 'block';
+        
+    }
+
+    // Función para aplicar los cambios de configuración
+    function applyChanges() {
+        // Aplicar los cambios a todas las líneas de la canción
+        const fontColor = document.getElementById('fontColor').value;
+        const bgColor = document.getElementById('bgColor').value;
+        const fontFamily = document.getElementById('fontFamily').value;
+        const fontSize = document.getElementById('fontSize').value;
+        const isBold = document.getElementById('fontBold').checked;
+        const isItalic = document.getElementById('fontItalic').checked;
+
+            if (settingsPanel.style.display === 'none' || settingsPanel.style.display === '') {
+            settingsPanel.style.display = 'block';
+        } else {
+            settingsPanel.style.display = 'none';
+        }
+
+        // Obtener todas las líneas de la canción
+        const songLines = document.querySelectorAll('.texto');
+
+        // Aplicar los estilos a cada línea
+        songLines.forEach(line => {
+            line.style.color = fontColor;
+            line.style.backgroundColor = bgColor;
+            line.style.fontFamily = fontFamily;
+            line.style.fontSize = fontSize + "px";
+            line.style.fontWeight = isBold ? 'bold' : 'normal';
+            line.style.fontStyle = isItalic ? 'italic' : 'normal';
+        });
+    }
+</script>
+
+</body>
+</html>
