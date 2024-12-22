@@ -11,28 +11,24 @@
             box-sizing: border-box;
         }
 
-
         .mas {
-    position: fixed; 
-    bottom: 0; /* Esto lo sitúa al final de la ventana */
-    left: 50%; /* Mueve el elemento al 50% del ancho de la ventana */
-    transform: translateX(-50%); /* Ajusta para que el centro del elemento coincida con el 50% */
-}
+            position: fixed; 
+            bottom: 0; /* Esto lo sitúa al final de la ventana */
+            left: 50%; /* Mueve el elemento al 50% del ancho de la ventana */
+            transform: translateX(-50%); /* Ajusta para que el centro del elemento coincida con el 50% */
+        }
 
-.mas2 {
-    position: fixed; 
-    bottom: 0; /* Esto lo sitúa al final de la ventana */
-    left: 0; /* Puedes ajustarlo a la izquierda, o a la derecha con right: 0; */
-}
+        .mas2 {
+            position: fixed; 
+            bottom: 0; /* Esto lo sitúa al final de la ventana */
+            left: 0; /* Puedes ajustarlo a la izquierda, o a la derecha con right: 0; */
+        }
 
-.bte {
-    
-    right: 10px; /* Ajusta al borde derecho del contenedor */
-    bottom: 10px; /* Puedes ajustar también la distancia desde el fondo */
-    z-index: 10; /* Asegura que el botón esté por encima de otros elementos */
-}
-
-
+        .bte {
+            right: 10px; /* Ajusta al borde derecho del contenedor */
+            bottom: 10px; /* Puedes ajustar también la distancia desde el fondo */
+            z-index: 10; /* Asegura que el botón esté por encima de otros elementos */
+        }
 
         body {
             font-family: Arial, sans-serif;
@@ -82,7 +78,6 @@
         .options-panel select {
             margin: 10px 0;
             font-size: 14px;
-            
         }
 
         .options-panel input,
@@ -94,8 +89,6 @@
             background-color: #313131;
             color: white;
         }
-
-
 
         #text-input {
             width: 100%;
@@ -178,17 +171,12 @@
                 <option value="flipIn">Giro</option>
                 <option value="rotateIn">Rotar</option>
             </select>
-            <button class="bte" onclick="generateLyrics(),toggleOptions()">Generar</button>
+            <button class="bte" onclick="generateLyrics()">Generar</button>
         </div>
         <div id="lyrics-container"></div>
     </div>
 
     <button id="my-button5" class="mas">Siguiente</button>
-
-
-
-
-
 
     <script>
         let currentLine = 0;
@@ -219,17 +207,14 @@
             currentLine++;
         }
 
-        // Detectar clic en el fondo para mostrar la siguiente línea
-        const button = document.getElementById("my-button5"); // Asegúrate de que el id del botón sea 'my-button'
+        // Detectar clic en el botón "Siguiente"
+        const button = document.getElementById("my-button5");
 
-function click() {
-    const lyricsContainer = document.getElementById("lyrics-container");
-    lyricsContainer.innerHTML = ""; // Limpiar el contenido anterior
-    showLine(); // Mostrar la siguiente línea
-}
-
-button.addEventListener("click", click);
-
+        button.addEventListener("click", function() {
+            const lyricsContainer = document.getElementById("lyrics-container");
+            lyricsContainer.innerHTML = ""; // Limpiar el contenido anterior
+            showLine(); // Mostrar la siguiente línea
+        });
 
         function toggleOptions() {
             const panel = document.getElementById("options-panel");
