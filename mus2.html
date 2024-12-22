@@ -12,6 +12,25 @@
         }
 
 
+/* Elimina el resaltado en dispositivos móviles (resaltado táctil) */
+* {
+    -webkit-tap-highlight-color: transparent !important; /* Safari y Chrome en dispositivos móviles */
+}
+
+/* Asegurarse de que no se cambie el color de fondo al hacer clic en los botones */
+
+a {
+    -webkit-tap-highlight-color: transparent; /* Safari y Chrome */
+    outline: none !important; /* Elimina cualquier contorno que se añada por el navegador */
+}
+
+/* En el caso de un clic activo, evitar el cambio de color de fondo */
+
+
+
+
+
+
         .mas {
     position: fixed; 
     bottom: 0; /* Esto lo sitúa al final de la ventana */
