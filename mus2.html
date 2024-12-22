@@ -11,12 +11,34 @@
             box-sizing: border-box;
         }
 
+
+        .mas {
+    position: fixed; 
+    bottom: 0; /* Esto lo sitúa al final de la ventana */
+    left: 50%; /* Mueve el elemento al 50% del ancho de la ventana */
+    transform: translateX(-50%); /* Ajusta para que el centro del elemento coincida con el 50% */
+}
+
+.mas2 {
+    position: fixed; 
+    bottom: 0; /* Esto lo sitúa al final de la ventana */
+    left: 0; /* Puedes ajustarlo a la izquierda, o a la derecha con right: 0; */
+}
+
+.bte {
+    position: fixed; 
+    right: 10%; /* Puedes ajustarlo a la izquierda, o a la derecha con right: 0; */
+}
+
+
+
         body {
             font-family: Arial, sans-serif;
             background-color: #222;
             color: white;
             text-align: center;
             padding: 20px;
+            cursor: pointer;
         }
 
         .container {
@@ -30,7 +52,7 @@
 
         button {
             padding: 10px 20px;
-            background-color: #007BFF;
+            background-color: #e20000;
             color: white;
             border: none;
             border-radius: 5px;
@@ -40,7 +62,7 @@
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #b30000;
         }
 
         .options-panel {
@@ -58,19 +80,20 @@
         .options-panel select {
             margin: 10px 0;
             font-size: 14px;
-            font-weight: bold;
-            font-style: italic;
+            
         }
 
         .options-panel input,
         .options-panel select {
-            padding: 8px;
+            padding: 2px;
             font-size: 14px;
             border-radius: 5px;
-            border: 1px solid #444;
-            background-color: #555;
+            border: 1px solid #dd0000;
+            background-color: #313131;
             color: white;
         }
+
+
 
         #text-input {
             width: 100%;
@@ -133,16 +156,16 @@
 </head>
 <body>
     <div class="container">
-        <h1>Generador de Video Lyrics</h1>
-        <button onclick="toggleOptions()">Configuración y Texto</button>
+
+        <button onclick="toggleOptions()">Mostrar / Ocultar</button>
         <div class="options-panel" id="options-panel">
             <textarea id="text-input" placeholder="Introduce el texto aquí..." rows="5"></textarea>
             <label for="color-picker">Color de Texto:</label>
-            <input type="color" id="color-picker" value="#ffffff">
+            <input type="color" id="color-picker" value="#ffffff"> <br>
             <label for="bg-color-picker">Color de Fondo:</label>
-            <input type="color" id="bg-color-picker" value="#000000">
+            <input type="color" id="bg-color-picker" value="#000000"><br>
             <label for="font-size">Tamaño de Fuente:</label>
-            <input type="number" id="font-size" value="40">
+            <input type="number" id="font-size" value="40"><br>
             <label for="animation">Animación:</label>
             <select id="animation">
                 <option value="none">Ninguna</option>
@@ -153,10 +176,18 @@
                 <option value="flipIn">Giro</option>
                 <option value="rotateIn">Rotar</option>
             </select>
-            <button onclick="generateLyrics()">Generar Lyrics</button>
+            <button class="bte" onclick="generateLyrics(),toggleOptions()">Generar</button>
         </div>
         <div id="lyrics-container"></div>
     </div>
+
+    <button id="my-button5" class="mas">Siguiente</button>
+
+
+
+
+
+
     <script>
         let currentLine = 0;
         let lines = [];
@@ -172,7 +203,9 @@
         }
 
         function showLine() {
-            if (currentLine >= lines.length) return;
+            if (currentLine >= lines.length) {
+                currentLine = 0;  // Vuelve a la primera línea después de mostrar la última
+            }
             const lyricsContainer = document.getElementById("lyrics-container");
             const lineElement = document.createElement("div");
             lineElement.classList.add("lyrics-line");
@@ -181,15 +214,20 @@
             lineElement.style.animation = document.getElementById("animation").value + " 2s forwards";
             lineElement.textContent = lines[currentLine];
             lyricsContainer.appendChild(lineElement);
+            currentLine++;
         }
 
-        window.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                currentLine++;
-                document.getElementById("lyrics-container").innerHTML = "";
-                showLine();
-            }
-        });
+        // Detectar clic en el fondo para mostrar la siguiente línea
+        const button = document.getElementById("my-button5"); // Asegúrate de que el id del botón sea 'my-button'
+
+function click() {
+    const lyricsContainer = document.getElementById("lyrics-container");
+    lyricsContainer.innerHTML = ""; // Limpiar el contenido anterior
+    showLine(); // Mostrar la siguiente línea
+}
+
+button.addEventListener("click", click);
+
 
         function toggleOptions() {
             const panel = document.getElementById("options-panel");
